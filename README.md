@@ -1,4 +1,5 @@
 <small>
+  
 **Create Configuration file with following data on corresponding lines:**
   
 - **Directory path for ImageNet dataset**
