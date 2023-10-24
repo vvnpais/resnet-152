@@ -12,7 +12,7 @@ Configuration file:<br>
 <li>file name for optimizer state file for resumption</li><br>
 </ul>
 <br><br>
-The following two files will be created:
+The following two files will be created:<br>
 Observations file (for every epoch):
 <ul>
 <li>Epoch number</li><br>
