@@ -1,5 +1,7 @@
 <small>
-  
+
+**Check sample configuration file before creating one as explained below**
+
 **Create Configuration file with following data on corresponding lines:**
   
 - **Directory path for ImageNet dataset**
@@ -33,9 +35,9 @@
 
 **ImageNet directory should contain:**
 
-- train
-- test
-- val
+- folder named 'train' with folders with label names and their corresponding training images inside them.
+- folder named 'test' with test images.
+- folder named 'val' with folders with label names and their corresponding validation images inside them.
 - LOC_synset_mapping.txt
 
 </small>
