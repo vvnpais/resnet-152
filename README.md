@@ -1,16 +1,15 @@
-# Create Configuration file with following data on corresponding lines:
-
 <small>
-
-- **Directory path for ImageNet dataset:**
-- **Model checkpoint file:**
-- **Observations file:**
-- **Continue training data file:** 
-- **Initial learning rate:** 
-- **Learning rate decay step size:** 
-- **Learning rate decay gamma:** 
-- **Batch size:** 
-- **Optimizer state file for resumption:** 
+**Create Configuration file with following data on corresponding lines:**
+  
+- **Directory path for ImageNet dataset**
+- **Model checkpoint file**
+- **Observations file**
+- **Continue training data file** 
+- **Initial learning rate** 
+- **Learning rate decay step size** 
+- **Learning rate decay gamma** 
+- **Batch size** 
+- **Optimizer state file for resumption** 
 
 **The following two files will be created:**
 
