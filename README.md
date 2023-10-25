@@ -2,11 +2,11 @@
 
 **Train model by executing the following command:**
 
-  python3 resnet.py <configuration-file>
+&emsp;python3 resnet.py <configuration-file>
 
 **For example**
 
-  python3 resnet.py configuration1.txt
+&emsp;python3 resnet.py configuration1.txt
 
 **Check sample configuration file before creating one as explained below**
 
