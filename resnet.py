@@ -111,7 +111,7 @@ model=ResNet152(num_classes=1000).to(device)
 
 ##########################################################################################################
 
-CONFIGURATION='configuration1.txt'
+CONFIGURATION=sys.argv[1]
 configuration_file=open(CONFIGURATION,'r')
 configuration=configuration_file.read().splitlines()
 data_directory=configuration[0]
@@ -122,23 +122,23 @@ start_learning_rate=float(configuration[4])
 step_size=int(configuration[5])
 gamma=float(configuration[6])
 batch_size=int(configuration[7])
-optimizer_state_file=configuration[8]
-print(data_directory,pth_file,OBSERVATIONS,CONTINUE_TRAINING,start_learning_rate,step_size,gamma,batch_size,optimizer_state_file)
-# print(type(data_directory),type(pth_file),type(OBSERVATIONS),type(CONTINUE_TRAINING),type(learning_rate),type(step_size),type(gamma),type(batch_size),type(optimizer_state_file))
+checkpoint_state_file=configuration[8]
 
+print(data_directory,pth_file,OBSERVATIONS,CONTINUE_TRAINING,start_learning_rate,step_size,gamma,batch_size,checkpoint_state_file)
+print(type(data_directory),type(pth_file),type(OBSERVATIONS),type(CONTINUE_TRAINING),type(start_learning_rate),type(step_size),type(gamma),type(batch_size),type(checkpoint_state_file))
+
+os.system(f'touch {CONTINUE_TRAINING}')
 continue_training_file=open(CONTINUE_TRAINING,'r')
 continue_training=continue_training_file.read().splitlines()
 # print(continue_training_data)
 if continue_training!=[]:
     last_completed_epoch_number=int(continue_training[0])
-    learning_rate=float(continue_training[1])
     training_hours=int(continue_training[2])
     training_minutes=int(continue_training[3])
     training_seconds=int(continue_training[4])
     continue_training_boolean=True
 else:
     last_completed_epoch_number=0
-    learning_rate=start_learning_rate
     training_hours=0
     training_minutes=0
     training_seconds=0
@@ -165,7 +165,7 @@ data_transforms={
 }
 sets=['train','val']
 image_datasets={ x :datasets.ImageFolder(os.path.join(data_directory,x),data_transforms[x]) for x in ['train','val']}
-num_work=2
+num_work=4
 dataloaders={}
 dataloaders['train']=torch.utils.data.DataLoader(image_datasets['train'],batch_size=batch_size,shuffle=True,num_workers=min(num_work,os.cpu_count()))
 dataloaders['val']=torch.utils.data.DataLoader(image_datasets['val'],batch_size=batch_size,shuffle=False,num_workers=min(num_work,os.cpu_count()))
@@ -235,14 +235,14 @@ def cudaUsageStats():
 ##########################################################################################################
 
 criterion=nn.CrossEntropyLoss()
-optimizer=torch.optim.SGD(model.parameters(),lr=learning_rate)
+optimizer=torch.optim.SGD(model.parameters(),lr=start_learning_rate)
 scheduler=lr_scheduler.StepLR(optimizer,step_size=step_size,gamma=gamma)
 
 if continue_training_boolean:
     model.load_state_dict(torch.load(pth_file))
-    optimizer_state=torch.load(optimizer_state_file)
-    optimizer.load_state_dict(optimizer_state['optimizer_state_dict'])
-    scheduler=lr_scheduler.StepLR(optimizer,step_size=step_size,gamma=gamma,last_epoch=last_completed_epoch_number)
+    checkpoint_state=torch.load(checkpoint_state_file)
+    optimizer.load_state_dict(checkpoint_state['optimizer_state_dict'])
+    scheduler.load_state_dict(checkpoint_state['scheduler_state_dict'])
 
 
 for param in model.parameters():
@@ -333,7 +333,6 @@ while True:
         if phase=='val' and sets!=['val']:
             torch.save(model.state_dict(),pth_file)
             last_completed_epoch_number+=1
-            learning_rate=optimizer.param_groups[0]['lr']
             observations_file=open(OBSERVATIONS,'a')
             observations_file.write(f'{last_completed_epoch_number}\n')
             observations_file.write(f'{epoch_learning_rate}\n')
@@ -346,13 +345,13 @@ while True:
             observations_file.close()
             continue_training_file=open(CONTINUE_TRAINING,'w')
             continue_training_file.write(f'{last_completed_epoch_number}\n')
-            continue_training_file.write(f'{learning_rate}\n')
             continue_training_file.write(f'{training_hours}\n')
             continue_training_file.write(f'{training_minutes}\n')
             continue_training_file.write(f'{training_seconds}\n')
             continue_training_file.close()
             torch.save({
-                'optimizer_state_dict':optimizer.state_dict()
-                },optimizer_state_file)
+                'optimizer_state_dict':optimizer.state_dict(),
+                'scheduler_state_dict':scheduler.state_dict()
+                },checkpoint_state_file)
             
     print()

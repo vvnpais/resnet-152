@@ -12,7 +12,7 @@
 - **Learning rate decay step size** 
 - **Learning rate decay gamma** 
 - **Batch size** 
-- **Optimizer state file for resumption** 
+- **Checkpoint state file for resumption** 
 
 **The following two files will be created:**
 
@@ -28,7 +28,6 @@
 
 - **Continue_training file:**
   - Last epoch completed
-  - Learning rate for the next epoch
   - Total training hours
   - Total training minutes
   - Total training seconds
