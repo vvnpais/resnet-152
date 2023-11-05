@@ -51,4 +51,6 @@
 - folder named 'val' with folders with label names and their corresponding validation images inside them.
 - LOC_synset_mapping.txt
 
+**If you encounter any problems or errors, please email me at 210010034@iitdh.ac.in**
+
 </small>
