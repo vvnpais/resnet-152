@@ -132,10 +132,11 @@ continue_training_file=open(CONTINUE_TRAINING,'r')
 continue_training=continue_training_file.read().splitlines()
 # print(continue_training_data)
 if continue_training!=[]:
+    continue_training[1]=continue_training[1].split(":")
     last_completed_epoch_number=int(continue_training[0])
-    training_hours=int(continue_training[2])
-    training_minutes=int(continue_training[3])
-    training_seconds=int(continue_training[4])
+    training_hours=int(continue_training[1][0])
+    training_minutes=int(continue_training[1][1])
+    training_seconds=int(continue_training[1][2])
     continue_training_boolean=True
 else:
     last_completed_epoch_number=0
@@ -256,9 +257,15 @@ while True:
     train_loss=0
     train_top1_accuracy=0
     train_top5_accuracy=0
+    train_time_h=0
+    train_time_m=0
+    train_time_s=0
     val_loss=0
     val_top1_accuracy=0
     val_top5_accuracy=0
+    val_time_h=0
+    val_time_m=0
+    val_time_s=0
     epoch_learning_rate=0
     
     epoch_start=time.time()
@@ -271,14 +278,14 @@ while True:
         else:
             model.eval() #set model to evaluation mode
             
-        running_loss=0.0
-        running_corrects=0
-        top5k=0
+        running_loss=torch.tensor(0.0).to(device)
+        running_corrects=torch.tensor(0.0).to(device)
+        top5k=torch.tensor(0.0).to(device)
 
         for inputs,labels in dataloaders[phase]:
             inputs=inputs.to(device)
             labels=labels.to(device)
-
+        
             with torch.set_grad_enabled(phase=='train'):
                 outputs=model(inputs)
                 # cudaUsageStats()
@@ -314,21 +321,33 @@ while True:
         phaseval=phase.capitalize()    
         print(f'{phaseval} Loss: {epoch_loss:.4f} Acc: {epoch_acc*100:.4f} % Top5k: {epoch_top5k_acc*100:.4f} %                  ')
         
-        if phase=='train':
-            train_loss=epoch_loss
-            train_top1_accuracy=epoch_acc*100
-            train_top5_accuracy=epoch_top5k_acc*100
-        elif phase=='val':
-            val_loss=epoch_loss
-            val_top1_accuracy=epoch_acc*100
-            val_top5_accuracy=epoch_top5k_acc*100
-        
         now=time.time()
         training_hours+=int((now-phase_start_time)//3600)
         training_minutes+=int(((now-phase_start_time)//60)%60)
         training_seconds+=int((now-phase_start_time)%60)
+        
+        if phase=='train':
+            train_loss=epoch_loss
+            train_top1_accuracy=epoch_acc*100
+            train_top5_accuracy=epoch_top5k_acc*100
+            train_time_h=int((now-phase_start_time)//3600)
+            train_time_m=int(((now-phase_start_time)//60)%60)
+            train_time_s=int((now-phase_start_time)%60)
+        elif phase=='val':
+            val_loss=epoch_loss
+            val_top1_accuracy=epoch_acc*100
+            val_top5_accuracy=epoch_top5k_acc*100
+            val_time_h=int((now-phase_start_time)//3600)
+            val_time_m=int(((now-phase_start_time)//60)%60)
+            val_time_s=int((now-phase_start_time)%60)
                 
         print(f'Epoch time:{(now-phase_start_time)//3600:02.0f}h, {((now-phase_start_time)//60)%60:02.0f}m, {(now-phase_start_time)%60:02.3f}s')
+        while training_seconds>=60:
+            training_seconds-=60
+            training_minutes+=1
+        while training_minutes>=60:
+            training_minutes-=60
+            training_hours+=1
         
         if phase=='val' and sets!=['val']:
             torch.save(model.state_dict(),pth_file)
@@ -339,15 +358,15 @@ while True:
             observations_file.write(f'{train_loss}\n')
             observations_file.write(f'{train_top1_accuracy}\n')
             observations_file.write(f'{train_top5_accuracy}\n')
+            observations_file.write(f'{train_time_h}:{train_time_m:02d}:{train_time_s:02d}\n')
             observations_file.write(f'{val_loss}\n')
             observations_file.write(f'{val_top1_accuracy}\n')
-            observations_file.write(f'{val_top5_accuracy}\n\n')
+            observations_file.write(f'{val_top5_accuracy}\n')
+            observations_file.write(f'{val_time_h}:{val_time_m:02d}:{val_time_s:02d}\n\n')
             observations_file.close()
             continue_training_file=open(CONTINUE_TRAINING,'w')
             continue_training_file.write(f'{last_completed_epoch_number}\n')
-            continue_training_file.write(f'{training_hours}\n')
-            continue_training_file.write(f'{training_minutes}\n')
-            continue_training_file.write(f'{training_seconds}\n')
+            continue_training_file.write(f'{training_hours}:{training_minutes:02d}:{training_seconds:02d}\n')
             continue_training_file.close()
             torch.save({
                 'optimizer_state_dict':optimizer.state_dict(),
