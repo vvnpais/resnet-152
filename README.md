@@ -4,17 +4,13 @@
 
 &emsp;python3 resnet.py \<configuration-file\>
 
-**For example**
-
-&emsp;python3 resnet.py configuration1.txt
+**For example** `python3 resnet.py configuration1.txt`
 
 **Make graphs based on observations by executing the following command:**
 
 &emsp;python3 make_graph.py \<configuration-file\>
 
-**For example**
-
-&emsp;python3 make_graph.py configuration1.txt
+**For example** `python3 make_graph.py configuration1.txt`
 
 **Check sample configuration file before creating one as explained below**
 
@@ -30,7 +26,7 @@
 - **Batch size** 
 - **Checkpoint state file for resumption** 
 
-**The following two files will be created:**
+**The following two files will be created while training:**
 
 - **Observations file (for every epoch):**
   - Epoch number
@@ -38,15 +34,15 @@
   - Train loss
   - Train Top1 accuracy
   - Train Top5 accuracy
-  - Val loss
-  - Val Top1 accuracy
-  - Val Top5 accuracy
+  - Train time in hh:mm:ss
+  - Validation loss
+  - Validation Top1 accuracy
+  - Validation Top5 accuracy
+  - Validation Time in hh:mm:ss
 
 - **Continue_training file:**
   - Last epoch completed
-  - Total training hours
-  - Total training minutes
-  - Total training seconds
+  - Total training time in hh:mm:ss
 
 **ImageNet directory should contain:**
 
