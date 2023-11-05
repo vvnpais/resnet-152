@@ -1,5 +1,13 @@
 <small>
 
+**Train model by executing the following command:**
+
+&emsp;python3 resnet.py \<configuration-file\>
+
+**For example**
+
+&emsp;python3 resnet.py configuration1.txt
+
 **Check sample configuration file before creating one as explained below**
 
 **Create Configuration file with following data on corresponding lines:**
