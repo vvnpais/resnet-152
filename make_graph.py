@@ -1,3 +1,5 @@
+image_format="jpg"
+
 import matplotlib.pyplot as plt
 import sys
 import os
@@ -82,26 +84,32 @@ titles=['Learning Rate Across Epochs',
          'Validation Top5 Accuracy Across Epochs',
          'Validation Time Across Epochs']
 
-x_ticks=list(set(epochs))
-x_labels = [f'{i}' for i in x_ticks]
+x_ticks=[1]+[i for i in range(10,101,10)]
+x_ticklabels = [f'{i}' for i in x_ticks]
+y_ticks=[i for i in range(0,101,10)]
+y_ticklabels = [f'{i}' for i in y_ticks]
+
 
 for i in range(3):
     for j in range(3):
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(16,9))
         plt.subplots_adjust(left=0.2,right=0.8,top=0.8,bottom=0.2)
         k=i*3+j
-        ax.plot(epochs, graphs[k], color='blue', marker='o', linestyle='-', linewidth=1)
+        ax.plot(epochs, graphs[k], color='blue', marker='.', linestyle='-', linewidth=1)
         ax.set_xticks(x_ticks)
-        ax.set_xticklabels(x_labels)
+        ax.set_xticklabels(x_ticklabels)
+        if graphs[k] in [train_top1_accuracy,train_top5_accuracy,val_top1_accuracy,val_top5_accuracy]:
+            ax.set_yticks(y_ticks)
+            ax.set_yticklabels(y_ticklabels)
         ax.set_xlabel('Epochs')
         ax.set_ylabel(ylabels[k])
         ax.set_title(titles[k])
         ax.grid(True, linestyle='--', alpha=0.6)
         # ax.legend()
-        plt.savefig(f"{graphs_names[k]}.jpg",format='jpg')
+        plt.savefig(f"{graphs_names[k]}.{image_format}",format=image_format)
 
 observations_folder=observations_file_name.split('.')
 observations_folder=observations_folder[0]
 os.system(f"mkdir -p {observations_folder}")
 for i in range(9):
-    os.system(f"mv {graphs_names[i]}.jpg {observations_folder}/")
+    os.system(f"mv {graphs_names[i]}.{image_format} {observations_folder}/")
