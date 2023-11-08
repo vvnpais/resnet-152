@@ -93,7 +93,7 @@ y_ticklabels = [f'{i}' for i in y_ticks]
 for i in range(3):
     for j in range(3):
         fig, ax = plt.subplots(figsize=(16,9))
-        plt.subplots_adjust(left=0.2,right=0.8,top=0.8,bottom=0.2)
+        plt.subplots_adjust(left=0.12,right=0.88,top=0.88,bottom=0.12)
         k=i*3+j
         ax.plot(epochs, graphs[k], color='blue', marker='.', linestyle='-', linewidth=1)
         ax.set_xticks(x_ticks)
