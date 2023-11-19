@@ -123,6 +123,7 @@ step_size=int(configuration[5])
 gamma=float(configuration[6])
 batch_size=int(configuration[7])
 checkpoint_state_file=configuration[8]
+required_epochs=int(configuration[9])
 
 print(data_directory,pth_file,OBSERVATIONS,CONTINUE_TRAINING,start_learning_rate,step_size,gamma,batch_size,checkpoint_state_file)
 print(type(data_directory),type(pth_file),type(OBSERVATIONS),type(CONTINUE_TRAINING),type(start_learning_rate),type(step_size),type(gamma),type(batch_size),type(checkpoint_state_file))
@@ -254,6 +255,8 @@ for param in model.parameters():
 
 alpha=0.5*10**(-5)
 while True:
+    if required_epochs!=-1 and required_epochs>=last_completed_epoch_number:
+        break
     train_loss=0
     train_top1_accuracy=0
     train_top5_accuracy=0
@@ -374,3 +377,4 @@ while True:
                 },checkpoint_state_file)
             
     print()
+
