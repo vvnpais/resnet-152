@@ -25,7 +25,7 @@
 - **Learning rate decay gamma** 
 - **Batch size** 
 - **Checkpoint state filename including .tar extension for resumption**
-- **Number of epochs the model should be trained**
+- **Number of epochs the model should be trained (-1 if you want no limit)**
 
 **The following two files will be created while training:**
 
