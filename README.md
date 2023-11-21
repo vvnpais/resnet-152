@@ -17,9 +17,9 @@
 **Create Configuration file with following data on corresponding lines:**
 
 - **Directory path for ImageNet dataset**
-- **Model checkpoint filename including .pth extension**
-- **Observations filename including .txt extension**
-- **Continue training data filename including .txt extension** 
+- **Model-checkpoint-file name including .pth extension**
+- **Observations-file name including .txt extension**
+- **Continue-training-datafile name including .txt extension** 
 - **Initial learning rate** 
 - **Learning rate decay step size** 
 - **Learning rate decay gamma** 
