@@ -52,6 +52,8 @@
 - folder named 'val' with folders with label names and their corresponding validation images inside them.
 - LOC_synset_mapping.txt
 
+**If you want to see how the files look like when training of 100 epochs is completed, clone the repo using and then type `git checkout 37e6d`.**
+
 **If you encounter any problems or errors, please email me at 210010034@iitdh.ac.in**
 
 </small>
