@@ -51,13 +51,14 @@ class block(nn.Module):
         return x
     
 class ResNet(nn.Module):
-    def __init__(self,block,layers,image_channels,num_classes):
+    def __init__(self,block,layers,image_channels,num_classes,dropout_probability):
         super(ResNet,self).__init__()
         self.conv1=nn.Conv2d(image_channels,64,kernel_size=7,stride=2,padding=3)
         self.bn1=nn.BatchNorm2d(64)
         self.relu=nn.ReLU()
         self.maxpool=nn.MaxPool2d(kernel_size=3,stride=2,padding=1)
         self.in_channels=64
+        self.dropout_probability=dropout_probability
 
         # Resnet layers
         self.layer1=self._make_layer(block,layers[0],out_channels=64,stride=1)
@@ -66,6 +67,7 @@ class ResNet(nn.Module):
         self.layer4=self._make_layer(block,layers[3],out_channels=512,stride=2)
         
         self.avgpool=nn.AdaptiveAvgPool2d((1,1))
+        self.dropout=nn.Dropout(p=dropout_probability)
         self.fc=nn.Linear(512*4,num_classes)
 
     def forward(self,x):
@@ -81,6 +83,7 @@ class ResNet(nn.Module):
 
         x=self.avgpool(x)
         x=x.reshape(x.shape[0],-1)
+        x=self.dropout(x)
         x=self.fc(x)
         return x
 
@@ -99,15 +102,6 @@ class ResNet(nn.Module):
 
         return nn.Sequential(*layers)
     
-def ResNet50(img_channels=3,num_classes=1000):
-    return ResNet(block,[3,4,6,3],img_channels,num_classes)
-def ResNet101(img_channels=3,num_classes=1000):
-    return ResNet(block,[3,4,23,3],img_channels,num_classes)
-def ResNet152(img_channels=3,num_classes=1000):
-    return ResNet(block,[3,8,36,3],img_channels,num_classes)
-
-device=torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model=ResNet152(num_classes=1000).to(device)
 
 ##########################################################################################################
 
@@ -124,9 +118,22 @@ gamma=float(configuration[6])
 batch_size=int(configuration[7])
 checkpoint_state_file=configuration[8]
 required_epochs=int(configuration[9])
+dropout_probability=float(configuration[10])
 
-print(data_directory,pth_file,OBSERVATIONS,CONTINUE_TRAINING,start_learning_rate,step_size,gamma,batch_size,checkpoint_state_file,required_epochs)
-print(type(data_directory),type(pth_file),type(OBSERVATIONS),type(CONTINUE_TRAINING),type(start_learning_rate),type(step_size),type(gamma),type(batch_size),type(checkpoint_state_file),type(required_epochs))
+print(data_directory,pth_file,OBSERVATIONS,CONTINUE_TRAINING,start_learning_rate,step_size,gamma,batch_size,checkpoint_state_file,required_epochs,dropout_probability,sep="  ")
+print(type(data_directory),type(pth_file),type(OBSERVATIONS),type(CONTINUE_TRAINING),type(start_learning_rate),type(step_size),type(gamma),type(batch_size),type(checkpoint_state_file),type(required_epochs),type(dropout_probability),sep="  ")
+
+
+def ResNet50(img_channels=3,num_classes=1000):
+    return ResNet(block,[3,4,6,3],img_channels,num_classes,dropout_probability)
+def ResNet101(img_channels=3,num_classes=1000):
+    return ResNet(block,[3,4,23,3],img_channels,num_classes,dropout_probability)
+def ResNet152(img_channels=3,num_classes=1000):
+    return ResNet(block,[3,8,36,3],img_channels,num_classes,dropout_probability)
+
+device=torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model=ResNet50(num_classes=1000).to(device)
+
 
 os.system(f'touch {CONTINUE_TRAINING}')
 continue_training_file=open(CONTINUE_TRAINING,'r')

@@ -5,6 +5,7 @@ continue_training1.txt
 0.01
 2
 0.97
-36
+64
 checkpoint1.tar
 100
+0
