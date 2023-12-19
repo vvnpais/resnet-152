@@ -26,6 +26,7 @@
 - **Batch size** 
 - **Checkpoint state filename including .tar extension for resumption**
 - **Number of epochs the model should be trained (-1 if you want no limit)**
+- **Dropout probability: probability that a node is multiplied by zero in second-from-last layer (0 if no dropout needed)**
 
 **The following two files will be created while training:**
 
