@@ -1,0 +1,11 @@
+/home/vivian/files/imagenet/
+resnet1.pth
+observations1.txt
+continue_training1.txt
+0.01
+2
+0.97
+64
+checkpoint1.tar
+100
+0.5
